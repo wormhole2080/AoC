@@ -18,10 +18,10 @@ def sol(part):
             while not np.all(series[-1]==0):
                 series.append(np.diff(np.array(series[-1], dtype=np.int64),n=1))
 
-            if part ==1:
-                while not (i+2) > len(series):
-                    series[-2-i] = np.append(series[-2-i], int(series[-2-i][-1])+int(series[-1-i][-1]))
-                    i+=1
+            if part == 1:
+                while not (i + 2) > len(series):
+                    series[-2 - i] = np.append(series[-2 - i], int(series[-2 - i][-1]) + int(series[-1 - i][-1]))
+                    i += 1
                 aggregate.append(series[0][-1])
 
             if part ==2:

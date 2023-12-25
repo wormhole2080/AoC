@@ -1,4 +1,3 @@
-import numpy as np
 import re
 
 def sol(part):
@@ -30,19 +29,15 @@ def navigate(nodes, dirs):
                 break
         return i
 def navigateMultiple(nodes, dirs):
-    i = 0
-    current = []
-    #current = re.findall('A$', [*nodes])
+    i = 0; current = []
+
     current = [node for node, value in nodes.items() if node.endswith("A")]
     n = len(dirs)
-    numfinishes = 0
 
-    while (numfinishes != len(current)):
+    while (len([a for a in current if a.endswith("Z")]) != len(current)):
         current = [nodes[a][dirs[i % n]] for a in current]
         i += 1
-        numFinishes = len([a for a in current if a.endswith("Z")])
-        if i > 10000000:
-            break
+        print(i)
     return i
 
 
