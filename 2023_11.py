@@ -16,25 +16,20 @@ def sol(part, input_file):
     universe = parse_input(input_file)
     distance = 0
 
-    expanded_universe, empty_rows, empty_cols = expand_universe(universe)
+    empty_rows, empty_cols = empty_dimensions(universe)
 
     if part ==1:
-        galaxies = find_galaxies(expanded_universe)
+        expansion = (2-1)
+    elif part ==2:
+        expansion=(1000000-1)
 
-        for i, galaxy in enumerate(galaxies):
-            for j, other_galaxy in enumerate(galaxies):
-                if j > i:
-                    distance += distance_1dimension(galaxy[0], other_galaxy[0]) + distance_1dimension(galaxy[1], other_galaxy[1])
+    galaxies = find_galaxies(universe)
 
-    if part == 2:
-        galaxies = find_galaxies(universe)
-
-        for i, galaxy in enumerate(galaxies):
-            for j, other_galaxy in enumerate(galaxies):
-                if j > i:
-                    distance += distance_1dimension_scaled(galaxy[0], other_galaxy[0],empty_rows) + distance_1dimension_scaled(galaxy[1],
-                                                                                                      other_galaxy[1],empty_cols)
-
+    for i, galaxy in enumerate(galaxies):
+        for j, other_galaxy in enumerate(galaxies):
+            if j > i:
+                distance += distance_1dimension_scaled(galaxy[0], other_galaxy[0], empty_rows, expansion)
+                distance += distance_1dimension_scaled(galaxy[1], other_galaxy[1], empty_cols, expansion)
     return distance
 def find_galaxies(universe):
     galaxies=[]
@@ -44,58 +39,34 @@ def find_galaxies(universe):
                 galaxies.append([x,y])
     return galaxies
 
-def distance_1dimension(a, b) -> int:
-    return max(a,b) - min(a,b)
-
-def distance_1dimension_scaled(a, b, empties) -> int:
+def distance_1dimension_scaled(a, b, empties, expansion) -> int:
     Max = max(a,b)
     Min = min(a,b)
 
-    return Max - Min + (sum( Min <= x <= Max for x in empties)) * (10)
+    return Max - Min + (sum( Min <= x <= Max for x in empties)) * expansion
 
 def parse_input(input):
     lines = input.split('\n')
     output = []
     for line in lines:
         output.append([*line])
-
     return output
 
-def expand_universe(universe):
-    universe, empty_rows = insert_rows(universe)
+def empty_dimensions(universe):
+    empty_rows = find_empty(universe)
     universe = np.array(universe).T.tolist()
-    universe, empty_cols = insert_rows(universe)
-    universe = np.array(universe).T.tolist()
+    empty_cols = find_empty(universe)
 
-    return universe, empty_rows, empty_cols
+    return empty_rows, empty_cols
 
-def insert_rows(universe):
-    empty = '.' * len(universe[0])
-    flag_empty = False
+def find_empty(universe):
     empty_lines = []
-
     for x, line in enumerate(universe):
-        if flag_empty == True:
-            flag_empty = False
-            continue
-
         if not any('#' in i for i in enumerate(line)):
-            universe.insert(x,[*empty])
-            flag_empty = True
             empty_lines.append(x)
-
-    return universe, empty_lines
-
-def count(list1, l, r):
-    c = 0
-    # traverse in the list1
-    for x in list1:
-        # condition check
-        if x>= l and x<= r:
-            c+= 1
-    return c
+    return empty_lines
 
 if __name__ == "__main__":
-    input = sample #open("2023_11.txt").read())
+    input = open("2023_11.txt").read()
     print(sol(1, input))
     print(sol(2, input))
